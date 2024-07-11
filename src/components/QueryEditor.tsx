@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { InlineField, Input, Stack } from '@grafana/ui';
+import { InlineField, Input } from '@grafana/ui';
 import { QueryEditorProps } from '@grafana/data';
 import { DataSource } from '../datasource';
 import { MyDataSourceOptions, MyQuery } from '../types';
@@ -7,39 +7,32 @@ import { MyDataSourceOptions, MyQuery } from '../types';
 type Props = QueryEditorProps<DataSource, MyQuery, MyDataSourceOptions>;
 
 export function QueryEditor({ query, onChange, onRunQuery }: Props) {
-  const onQueryTextChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onChange({ ...query, queryText: event.target.value });
+  const onLowerLimitChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onChange({ ...query, lowerLimit: event.target.valueAsNumber });
   };
 
-  const onConstantChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onChange({ ...query, constant: parseFloat(event.target.value) });
-    // executes the query
-    onRunQuery();
+  const onUpperLimitChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onChange({ ...query, upperLimit: event.target.valueAsNumber });
   };
 
-  const { queryText, constant } = query;
+  const onTickIntervalChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onChange({ ...query, tickInterval: event.target.valueAsNumber });
+  };
+
+  const { upperLimit, lowerLimit, tickInterval } = query;
 
   return (
-    <Stack gap={0}>
-      <InlineField label="Constant">
-        <Input
-          id="query-editor-constant"
-          onChange={onConstantChange}
-          value={constant}
-          width={8}
-          type="number"
-          step="0.1"
-        />
+    <div className="gf-form">
+      <InlineField label="Lower Limit" labelWidth={16} tooltip="Random numbers lower limit">
+        <Input onChange={onLowerLimitChange} onBlur={onRunQuery} value={lowerLimit || ''} type="number" />
       </InlineField>
-      <InlineField label="Query Text" labelWidth={16} tooltip="Not used yet">
-        <Input
-          id="query-editor-query-text"
-          onChange={onQueryTextChange}
-          value={queryText || ''}
-          required
-          placeholder="Enter a query"
-        />
+      <InlineField label="Upper Limit" labelWidth={16} tooltip="Random numbers upper limit">
+        <Input onChange={onUpperLimitChange} onBlur={onRunQuery} value={upperLimit || ''} type="number" />
       </InlineField>
-    </Stack>
+      <InlineField label="Tick interval" labelWidth={16} tooltip="Server tick interval">
+        <Input onChange={onTickIntervalChange} onBlur={onRunQuery} value={tickInterval || ''} type="number" />
+      </InlineField>
+    </div>
   );
 }
+
