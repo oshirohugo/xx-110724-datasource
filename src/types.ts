@@ -2,12 +2,15 @@ import { DataSourceJsonData } from '@grafana/data';
 import { DataQuery } from '@grafana/schema';
 
 export interface MyQuery extends DataQuery {
-  queryText?: string;
-  constant: number;
+  upperLimit?: number;
+  lowerLimit?: number;
+  tickInterval?: number;
 }
 
 export const DEFAULT_QUERY: Partial<MyQuery> = {
-  constant: 6.5,
+  upperLimit: 1,
+  lowerLimit: 0,
+  tickInterval: 1000,
 };
 
 export interface DataPoint {
